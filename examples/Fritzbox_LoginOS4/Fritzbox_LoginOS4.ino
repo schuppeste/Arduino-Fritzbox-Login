@@ -13,19 +13,18 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 char server[] = "192.168.2.120";    // name address for Google (using DNS)
 char fritzbox[] = "Host: 192.168.2.120";
 char* meinpasswort = "-Passwort"; // '-' Password
-String benutzername = "";
+String benutzername = ""; //Username
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192, 168, 2, 125);
 //CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE 
 EthernetClient client;
 byte mynewbytes[100];
 void setup() {
-  // Open serial communications and wait for port to open:
+ 
   Serial.begin(9600);
-  // start the Ethernet connection:
+  
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
-    // try to congifure using IP address instead of DHCP:
     Ethernet.begin(mac, ip);
   }
   // give the Ethernet shield a second to initialize:
@@ -37,13 +36,11 @@ void setup() {
   // if you get a connection, report back via serial:
   if (client.connect(server, 80)) {
     Serial.println("connected");
-    // Make a HTTP request:
     client.println("GET /cgi-bin/webcm?getpage=../html/login_sid.xml  HTTP/1.1");
     client.println(fritzbox);
     client.println("Connection: close");
     client.println();
   } else {
-    // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
   /////////////////////////////////////////////
@@ -56,13 +53,12 @@ void setup() {
     //Lese alle Zeichen bis </Challenge in chid ein
     while (1) {
       c = client.read();
-      // Serial.print(c);
       if (c == '<')break; //Verlasse While bei <
       chid += c;
     }
     Serial.println(chid); //
   } else Serial.println("Nichts gefunden");
-  //Restliche Zeichen der Seite einlesen, damit Buffer fÃ¼r neue Seite geleert wird
+  
   while (client.available()) char dummy = client.read();
   client.stop(); //diesen Aufruf schliessen
   
@@ -95,9 +91,7 @@ void setup() {
   // tempz.toUpperCase();
   String meineSid = "";
   String PostData = "login:command/response=" + chid + "-" + md5str + "&getpage=../html/login_sid.xml";
-  // String test = "response=" + chid + "-" + tempz + "&getpage=../html/login_sid.xml";
   String test = "POST /cgi-bin/webcm HTTP/1.1";
-  // String test="POST /home/home.lua HTTP/1.1";
   Serial.println(test);
   
   /////////////////////////////////////////////
@@ -126,13 +120,13 @@ void setup() {
     //Lese alle Zeichen bis </SID in meineSid ein
     while (1) {
       d = client.read();
-      Serial.print(d);
       if (d == '<')break; //Verlasse While bei <
       meineSid += d;
     }
     Serial.println("meineSid:"); //
     Serial.println(meineSid); //
   } else Serial.println("Nichts gefunden");
+  
   while (client.available()) char dummy = client.read();
   client.stop(); //diesen Aufruf schliessen
 }
