@@ -91,7 +91,7 @@ void setup() {
   Serial.println(md5str);
 
   String tempz = md5str;
-  tempz.toUpperCase();
+  //tempz.toUpperCase(); Commented Out for newest OS
   String meineSid = "";
   // String body = "login:command/response=" + chid + "-" + tempz + "&getpage=../html/login_sid.xml";
   String test = "GET /login_sid.lua?username=" + benutzername + "&response=" + chid + "-" + tempz  +  " HTTP/1.1";
